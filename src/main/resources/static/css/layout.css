@@ -1,0 +1,32 @@
+.layui-main-layout {
+
+    margin: 0 auto;
+    padding: 0;
+    width: auto;
+    height: 100%;
+    /*border: 1px solid #00a0e9;*/
+}
+
+.layui-main-layout-separator, .layui-main-layout-left, .layui-main-layout-right {
+    /*position: absolute;*/
+    float: left;
+    border: 1px solid red;
+    height: 100%;
+}
+
+.layui-main-layout-left {
+    width: 29%;
+
+}
+
+.layui-main-layout-right {
+    width: 70%;
+}
+.layui-main-layout-separator{
+    width:1px;
+    border: 1px solid rgba(18,11,12,0.25);
+    cursor: w-resize;
+    display: flex;
+    transition-duration: 0ms;
+    transform: translateX(0px);
+}

@@ -1,0 +1,104 @@
+[
+  {
+    "id": 1,
+    "text": "资源管理",
+    "url": "/",
+    "parent_id": 0,
+    "code": "100",
+    "expand": true,
+    "layuiIcon": "&#xe7a0;",
+    "leaf": false,
+    "children": [
+      {
+        "id": 2,
+        "text": "系统注册",
+        "url": "/system/toSystemLogin",
+        "parent_id": 1,
+        "code": "1001",
+        "expand": true,
+        "layuiIcon": "&#xe61f;",
+        "leaf": true,
+        "children": null
+      },
+      {
+        "id": 3,
+        "text": "系统资源管理",
+        "url": "/system/toSystemResource",
+        "parent_id": 1,
+        "code": "1002",
+        "expand": true,
+        "layuiIcon": "&#xe61d;",
+        "leaf": true,
+        "children": null
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "text": "组织与用户管理",
+    "url": "/",
+    "parent_id": 0,
+    "code": "200",
+    "expand": true,
+    "layuiIcon": "&#xe613;",
+    "leaf": false,
+    "children": [
+      {
+        "id": 5,
+        "text": "组织机构",
+        "url": "/structure/toStructure",
+        "parent_id": 4,
+        "code": "2001",
+        "expand": true,
+        "layuiIcon": "&#xe613;",
+        "leaf": true,
+        "children": null
+      },
+      {
+        "id": 6,
+        "text": "用户管理",
+        "url": "/structure/toUser",
+        "parent_id": 4,
+        "code": "2002",
+        "expand": true,
+        "layuiIcon": "&#xe612;",
+        "leaf": true,
+        "children": null
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "text": "权限管理",
+    "url": "/",
+    "parent_id": 0,
+    "code": "300",
+    "expand": true,
+    "layuiIcon": "&#xe600;",
+    "leaf": false,
+    "children": [
+      {
+        "id": 8,
+        "text": "角色管理",
+        "url": "/authority/toAuthority",
+        "parent_id": 7,
+        "code": "3001",
+        "expand": true,
+        "layui-icon": "&#xe600;",
+        "leaf": true,
+        "children": null
+      },
+      {
+        "id": 9,
+        "text": "用户角色管理",
+        "url": "/authority/toUserRole",
+        "parent_id": 7,
+        "code": "3002",
+        "expand": true,
+        "layuiIcon": "&#xe61b;",
+        "leaf": true,
+        "children": null
+      }
+    ]
+  }
+]

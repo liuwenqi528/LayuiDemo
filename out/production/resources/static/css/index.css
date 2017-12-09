@@ -1,0 +1,14 @@
+* {
+    margin:  0 auto;
+    padding: 0;
+}
+.layui-nav a > i {
+    font-size: 17px;
+    width:20px;
+}
+.layui-tab-content{
+    padding:3px;
+}
+.layui-tab-content>.layui-tab-item{
+    height:100%;
+}
