@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class StructureController {
     @RequestMapping("/toUser")
     public String listAll(){
-        return "user";
+        return "user2";
     }
 
 
