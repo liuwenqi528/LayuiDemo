@@ -31,7 +31,7 @@ public class ModuleController {
                 "      {\n" +
                 "        \"id\": 2,\n" +
                 "        \"text\": \"系统注册\",\n" +
-                "        \"url\": \"/system/toSystemLogin\",\n" +
+                "        \"url\": \"/structure/toUser\",\n" +
                 "        \"parent_id\": 1,\n" +
                 "        \"code\": \"1001\",\n" +
                 "        \"expand\": true,\n" +

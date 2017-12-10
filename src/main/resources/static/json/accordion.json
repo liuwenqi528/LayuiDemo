@@ -12,7 +12,8 @@
       {
         "id": 2,
         "text": "系统注册",
-        "url": "/system/toSystemLogin",
+        "url": "/structure/toUser",
+//        "url": "/system/toSystemLogin",
         "parent_id": 1,
         "code": "1001",
         "expand": true,
