@@ -2,6 +2,7 @@ layui.use('jquery', function () {
     var $ = layui.jquery;
     var $data ;
     $.ajax({
+        // url: '/accordion.json',
         url: '/module/listModule',
         type: "post",
         dataType: "JSON",

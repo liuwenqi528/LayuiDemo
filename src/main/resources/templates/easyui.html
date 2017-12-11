@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <title>用户管理</title>
+
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/gray/easyui.css"
+          th:href="@{/easyui/themes/default/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css"
+          th:href="@{/easyui/themes/icon.css}"/>
+    <script type="text/javascript" src="../static/easyui/jquery.min.js" th:src="@{/easyui/jquery.min.js}"></script>
+    <script type="text/javascript" src="../static/easyui/jquery.easyui.min.js"
+            th:src="@{/easyui/jquery.easyui.min.js}"></script>
+    <style type="text/css">
+
+    </style>
+</head>
+<body class="easyui-layout" data-options="fit:true">
+<div data-options="region:'west',split:true,minWidth:500,width:500,border:false,title:'zuobian'">
+
+    <table class="easyui-datagrid" style="width:400px;height:250px"
+           data-options="url:'datagrid_data.json',fitColumns:true,singleSelect:true">
+        <thead>
+        <tr>
+            <th data-options="field:'code',width:100">Code</th>
+            <th data-options="field:'name',width:100">Name</th>
+            <th data-options="field:'price',width:100,align:'right'">Price</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div data-options="region:'center',border:false,minWidth:400,title:'zuobian'" id="rightContent" style="height:100%">
+    <h2>Drag Drop Tree Nodes</h2>
+    <p>Press mouse down and drag a node to another position.</p>
+    <div style="margin:20px 0;"></div>
+    <div class="easyui-panel" style="padding:5px">
+        <ul class="easyui-tree" data-options="url:'../static/easyui/demo/tree/tree_data1.json',method:'get',animate:true,dnd:true"></ul>
+    </div>
+</div>
+</body>
+</html>
