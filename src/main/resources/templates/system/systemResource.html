@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <title>用户管理</title>
+
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}"/>
+    <script type="text/javascript" src="../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../../static/easyui/themes/default/easyui.css"
+          th:href="@{/easyui/themes/default/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../static/easyui/themes/icon.css"
+          th:href="@{/easyui/themes/icon.css}"/>
+    <script type="text/javascript" src="../../static/easyui/jquery.min.js" th:src="@{/easyui/jquery.min.js}"></script>
+    <script type="text/javascript" src="../../static/easyui/jquery.easyui.min.js"
+            th:src="@{/easyui/jquery.easyui.min.js}"></script>
+    <style type="text/css">
+        html, body {
+            height: 99%;
+            width: auto;
+        }
+
+        .layout-split-proxy-h,
+        .layout-split-proxy-v {
+            background-color: #999999;
+            width: 4px;
+        }
+
+        .layout-split-west {
+            border-right: 2px solid #E6EEF8;
+        }
+
+        .layui-colla-content {
+            padding: 0;
+        }
+
+        .layui-border-box, .layui-table-view {
+            margin: 0;
+        }
+    </style>
+    <script>
+        //JavaScript代码区域
+        layui.use(['element', 'tree', 'jquery', 'table'], function () {
+            var element = layui.element, $ = layui.jquery, table = layui.table;
+//ajax获取左侧tree的数据，即组织架构的数据
+            $.ajax({
+                url: '/structure/structureTree',
+                dataType: "JSON",
+                type: "POST",
+                success: function (data) {
+//                    请求成功后，渲染tree
+                    layui.tree({
+                        elem: '#structureTree' //传入元素选择器
+                        , nodes: data,//tree节点内容
+                        click: function (a) {
+                            console.info(a);
+                            table.reload('userContent', {
+                                where: { //请求参数（注意：这里面的参数可任意定义，并非下面固定的格式）
+                                    sid: a.id,
+                                    page: 1
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            table.on('edit(userContent)', function (obj) {
+                var value = obj.value //得到修改后的值
+                    , data = obj.data //得到所在行所有键值
+                    , field = obj.field; //得到字段
+                layer.msg('[ID: ' + data.id + '] ' + field + ' 字段更改为：' + value);
+            });
+//            自定义函数
+            active = {
+                getCheckData: function () { //获取选中数据
+                    var checkStatus = table.checkStatus('userContent')
+                        , data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                }
+                , getCheckLength: function () { //获取选中数目
+                    var checkStatus = table.checkStatus('userContent')
+                        , data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                }
+                , isAll: function () { //验证是否全选
+                    var checkStatus = table.checkStatus('userContent');
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选')
+                }
+            };
+//给按钮添加点击事件
+            $('.demoTable .layui-btn').on('click', function () {
+                //获取按钮中data-type属性的值，
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+        })
+    </script>
+</head>
+<body class="easyui-layout" data-options="fit:true">
+<div data-options="region:'west',split:true,minWidth:500,width:500,border:false">
+    <!--树形菜单，表示组织机构-->
+    <div class="layui-colla-item">
+        <!--标题-->
+        <h2 class="layui-colla-title">系统列表</h2>
+        <!--内容-->
+        <div class="layui-colla-content layui-show">
+            <table class="layui-table"
+                   lay-data="{height: 'full-44',even:true,skin:'row',id:'userContent', cellMinWidth: 80, page: true, limit:30, url:'/structure/listUserByStructure'}"
+                   lay-filter="userContent">
+                <thead>
+                <tr>
+                    <th lay-data="{type:'checkbox', width:'10%',fixed: 'left'}">ID</th>
+                    <th lay-data="{field:'username', width:'30%', edit: 'text'}">用户名</th>
+                    <th lay-data="{field:'sign', width: '30%',align:'center', edit: 'text'}">签名</th>
+                    <th lay-data="{field:'score', sort: true, width: '30%',align:'center'}">评分</th>
+                </tr>
+                </thead>
+            </table>
+
+        </div>
+    </div>
+</div>
+<div data-options="region:'center',border:false,minWidth:400" id="rightContent" style="height:100%">
+    <div class="easyui-layout" data-options="fit:true">
+        <div data-options="region:'north',border:false" style="height:50%;">
+            <div class="layui-colla-item">
+                <!--标题-->
+                <div class="layui-colla-title" style="position:fixed; width:100%;z-index: 100;">资源列表</div>
+                <!--内容-->
+                <div class="layui-colla-content layui-show" style="position:relative;top:42px;width:100%">
+                    <ul id="structureTree"></ul>
+                </div>
+            </div>
+        </div>
+        <div data-options="region:'center',border:false,minWidth:400" id="southContent" style="height:50%">
+            <!--datagrid 表格，表示用户-->
+            <div class="layui-colla-item" style="height:100%;">
+                <!--标题-->
+                <div class="layui-colla-title" >用户
+                    <div class="layui-btn-group demoTable">
+                        <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>
+                        <button class="layui-btn" data-type="getCheckLength">获取选中数目</button>
+                        <button class="layui-btn" data-type="isAll">验证是否全选</button>
+                    </div>
+                </div>
+                <!--内容-->
+                <div class="layui-colla-content layui-show">
+                    <table class="layui-table"
+                           lay-data="{height:'full-422',even:true,skin:'row',id:'userContent', cellMinWidth: 80, page: true, limit:30, url:'/structure/listUserByStructure'}"
+                           lay-filter="userContent">
+                        <thead>
+                        <tr>
+                            <th lay-data="{type:'checkbox', width:'5%',fixed: 'left'}">ID</th>
+                            <th lay-data="{field:'id', width:'10%', sort: true,fixed: 'left'}">ID</th>
+                            <th lay-data="{field:'username', width:'15%', edit: 'text'}">用户名</th>
+                            <th lay-data="{field:'sex', width:'10%', sort: true,align:'center'}">性别</th>
+                            <th lay-data="{field:'sign', width: '28%',align:'center', edit: 'text'}">签名</th>
+                            <th lay-data="{field:'experience',width: '10%', sort: true,align:'center'}">积分</th>
+                            <th lay-data="{field:'score', sort: true, width: '20%',align:'center'}">评分</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>系统资源管理</title>
+    <link rel="stylesheet" href="../../static/layui/css/layui.css" th:href="@{/layui/css/layui.css}"/>
+    <script type="text/javascript" src="../../static/layui/layui.js" th:src="@{/layui/layui.js}"></script>
+    <link rel="stylesheet" type="text/css" href="../../static/easyui/themes/default/easyui.css"
+          th:href="@{/easyui/themes/default/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../static/easyui/themes/icon.css"
+          th:href="@{/easyui/themes/icon.css}"/>
+    <script type="text/javascript" src="../../static/easyui/jquery.min.js" th:src="@{/easyui/jquery.min.js}"></script>
+    <script type="text/javascript" src="../../static/easyui/jquery.easyui.min.js"
+            th:src="@{/easyui/jquery.easyui.min.js}"></script>
+    <link rel="stylesheet" href="../../static/zTree/metro.css" th:href="@{/zTree/metro.css}"/>
+    <script src="../../static/zTree/jquery.ztree.all-3.5.min.js" th:src="@{/zTree/jquery.ztree.all-3.5.min.js}"></script>
+    <style type="text/css">
+        html, body {
+            height: 100%;
+            width: auto;
+        }
+
+        .layout-split-proxy-h,
+        .layout-split-proxy-v {
+            background-color: #a1a4b8;
+        }
+
+        .layout-panel {
+            border-color: #e6e6e6;
+        }
+
+        .layui-colla-content {
+            padding: 0;
+        }
+
+        .layui-border-box, .layui-table-view {
+            margin: 0;
+        }
+
+        .ztree * {
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            font-family: Helvetica Neue, Helvetica, PingFang SC, \5FAE\8F6F\96C5\9ED1, Tahoma, Arial, sans-serif
+        }
+
+        .layui-btn {
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .layui-input, .layui-select, .layui-textarea {
+            height: 30px;
+        }
+
+        .layui-btn {
+            width: 55px;
+            height: 25px;
+            line-height: 25px;
+        }
+    </style>
+    <style>
+        .layui-tab-content {
+            padding: 0;
+        }
+
+        .layui-body {
+            overflow-y: scroll;
+        }
+
+        body {
+            overflow-y: scroll;
+        }
+    </style>
+    <SCRIPT type="text/javascript">
+        <!--
+        var setting = {
+            edit: {
+                drag: {
+                    autoExpandTrigger: true,
+                    prev: dropPrev,
+                    inner: dropInner,
+                    next: dropNext
+                },
+                enable: true,
+                showRemoveBtn: false,
+                showRenameBtn: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                beforeDrag: beforeDrag,
+                beforeDrop: beforeDrop,
+                beforeDragOpen: beforeDragOpen,
+                onDrag: onDrag,
+                onDrop: onDrop,
+                onExpand: onExpand
+            }
+        };
+
+        var zNodes = [
+            {id: 1, pId: 0, name: "随意拖拽 1", open: true},
+            {id: 11, pId: 1, name: "随意拖拽 1-1"},
+            {id: 12, pId: 1, name: "随意拖拽 1-2"},
+            {id: 121, pId: 12, name: "随意拖拽 1-2-1"},
+            {id: 122, pId: 12, name: "随意拖拽 1-2-2"},
+            {id: 123, pId: 12, name: "随意拖拽 1-2-3"},
+            {id: 13, pId: 1, name: "禁止拖拽 1-3", open: true, drag: false},
+            {id: 131, pId: 13, name: "禁止拖拽 1-3-1", drag: false},
+            {id: 132, pId: 13, name: "禁止拖拽 1-3-2", drag: false},
+            {id: 132, pId: 13, name: "禁止拖拽 1-3-3", drag: false},
+            {id: 2, pId: 0, name: "禁止子节点移走 2", open: true, childOuter: false},
+            {id: 21, pId: 2, name: "我不想成为父节点 2-1", dropInner: false},
+            {id: 22, pId: 2, name: "我不要成为根节点 2-2", dropRoot: false},
+            {id: 23, pId: 2, name: "拖拽试试看 2-3"},
+            {id: 3, pId: 0, name: "禁止子节点排序/增加 3", open: true, childOrder: false, dropInner: false},
+            {id: 31, pId: 3, name: "随意拖拽 3-1"},
+            {id: 32, pId: 3, name: "随意拖拽 3-2"},
+            {id: 33, pId: 3, name: "随意拖拽 3-3"}
+        ];
+
+        function dropPrev(treeId, nodes, targetNode) {
+            var pNode = targetNode.getParentNode();
+            if (pNode && pNode.dropInner === false) {
+                return false;
+            } else {
+                for (var i = 0, l = curDragNodes.length; i < l; i++) {
+                    var curPNode = curDragNodes[i].getParentNode();
+                    if (curPNode && curPNode !== targetNode.getParentNode() && curPNode.childOuter === false) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function dropInner(treeId, nodes, targetNode) {
+            if (targetNode && targetNode.dropInner === false) {
+                return false;
+            } else {
+                for (var i = 0, l = curDragNodes.length; i < l; i++) {
+                    if (!targetNode && curDragNodes[i].dropRoot === false) {
+                        return false;
+                    } else if (curDragNodes[i].parentTId && curDragNodes[i].getParentNode() !== targetNode && curDragNodes[i].getParentNode().childOuter === false) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function dropNext(treeId, nodes, targetNode) {
+            var pNode = targetNode.getParentNode();
+            if (pNode && pNode.dropInner === false) {
+                return false;
+            } else {
+                for (var i = 0, l = curDragNodes.length; i < l; i++) {
+                    var curPNode = curDragNodes[i].getParentNode();
+                    if (curPNode && curPNode !== targetNode.getParentNode() && curPNode.childOuter === false) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        var log, className = "dark", curDragNodes, autoExpandNode;
+
+        function beforeDrag(treeId, treeNodes) {
+            className = (className === "dark" ? "" : "dark");
+            showLog("[ " + getTime() + " beforeDrag ]&nbsp;&nbsp;&nbsp;&nbsp; drag: " + treeNodes.length + " nodes.");
+            for (var i = 0, l = treeNodes.length; i < l; i++) {
+                if (treeNodes[i].drag === false) {
+                    curDragNodes = null;
+                    return false;
+                } else if (treeNodes[i].parentTId && treeNodes[i].getParentNode().childDrag === false) {
+                    curDragNodes = null;
+                    return false;
+                }
+            }
+            curDragNodes = treeNodes;
+            return true;
+        }
+
+        function beforeDragOpen(treeId, treeNode) {
+            autoExpandNode = treeNode;
+            return true;
+        }
+
+        function beforeDrop(treeId, treeNodes, targetNode, moveType, isCopy) {
+            className = (className === "dark" ? "" : "dark");
+            showLog("[ " + getTime() + " beforeDrop ]&nbsp;&nbsp;&nbsp;&nbsp; moveType:" + moveType);
+            showLog("target: " + (targetNode ? targetNode.name : "root") + "  - is " + (isCopy == null ? "cancel" : isCopy ? "copy" : "move"));
+            return true;
+        }
+
+        function onDrag(event, treeId, treeNodes) {
+            className = (className === "dark" ? "" : "dark");
+            showLog("[ " + getTime() + " onDrag ]&nbsp;&nbsp;&nbsp;&nbsp; drag: " + treeNodes.length + " nodes.");
+        }
+
+        function onDrop(event, treeId, treeNodes, targetNode, moveType, isCopy) {
+            className = (className === "dark" ? "" : "dark");
+            showLog("[ " + getTime() + " onDrop ]&nbsp;&nbsp;&nbsp;&nbsp; moveType:" + moveType);
+            showLog("target: " + (targetNode ? targetNode.name : "root") + "  - is " + (isCopy == null ? "cancel" : isCopy ? "copy" : "move"))
+        }
+
+        function onExpand(event, treeId, treeNode) {
+            if (treeNode === autoExpandNode) {
+                className = (className === "dark" ? "" : "dark");
+                showLog("[ " + getTime() + " onExpand ]&nbsp;&nbsp;&nbsp;&nbsp;" + treeNode.name);
+            }
+        }
+
+        function showLog(str) {
+            if (!log) log = $("#log");
+            log.append("<li class='" + className + "'>" + str + "</li>");
+            if (log.children("li").length > 8) {
+                log.get(0).removeChild(log.children("li")[0]);
+            }
+        }
+
+        function getTime() {
+            var now = new Date(),
+                h = now.getHours(),
+                m = now.getMinutes(),
+                s = now.getSeconds(),
+                ms = now.getMilliseconds();
+            return (h + ":" + m + ":" + s + " " + ms);
+        }
+
+        function setTrigger() {
+            var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+            zTree.setting.edit.drag.autoExpandTrigger = $("#callbackTrigger").attr("checked");
+        }
+
+        $(document).ready(function () {
+            $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+            $("#callbackTrigger").bind("change", {}, setTrigger);
+        });
+        //-->
+    </SCRIPT>
+</head>
+
+<body>
+<div class="layui-collapse">
+    <div class="layui-colla-item" style=" background-color: #f2f2f2;height: 42px;line-height: 42px;padding-left: 15px;">
+        <h2 style="width: 35%; font-size: 14px;float: left;">系统列表</h2>
+        <h2 style="width: 65%; font-size: 14px">资源列表</h2>
+    </div>
+</div>
+<div class="layui-collapse easyui-layout" style="width:99%;padding-left: 5px;" data-options="fit:true">
+    <!--左-->
+    <div id="leftT" style="width: 34%;float: left;margin-right: 2px;box-sizing: border-box;"
+         data-options="region:'west',split:true,minWidth:200,width:700,border:false">
+        <div style="padding: 0px">
+            <div class="layui-input-inline">
+                <input type="text" name="name" placeholder="支持模糊查询.." autocomplete="off" class="layui-input"/>
+            </div>
+            <button lay-filter="search" class="layui-btn" lay-data="{submit:true}"><i class="fa fa-search" aria-hidden="true"></i>
+                查询
+            </button>
+        </div>
+        <table class="layui-hide" id="test" lay-filter="demo" style="width: 100%;"></table>
+        <script type="text/html" id="switchTpl">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="sex" value="1" lay-skin="switch" lay-text="女|男" lay-filter="sexDemo"/>
+        </script>
+
+        <script type="text/html" id="checkboxTpl">
+            <!-- 这里的 checked 的状态只是演示 -->
+            <input type="checkbox" name="lock" value="2" title="锁定" lay-filter="lockDemo"/>
+        </script>
+
+    </div>
+    <!--右-->
+    <div class="layui-collapse easyui-layout" id="rightT" style="width:65%;float: left;box-sizing: border-box;"
+         data-options="fit:true,region:'center',border:false,minWidth:400">
+        <div style="height: 43.7%;" data-options="region:'north',split:true,minWidth:200,width:700,border:false">
+            <div class="layui-btn-group" style="padding: 0px;">
+                <button class="layui-btn">增加</button>
+                <button class="layui-btn ">编辑</button>
+                <button class="layui-btn">删除</button>
+            </div>
+            <div class="zTreeDemoBackground left" style="border-top:5px solid #e6e6e6;height: 290px;">
+                <ul id="treeDemo" class="ztree" style="overflow:auto;height: 290px;"></ul>
+            </div>
+        </div>
+        <div style="height: 50%" data-options="region:'center',border:false,minWidth:400">
+            <div class="layui-btn-group" style="padding: 0px;">
+                <button class="layui-btn">增加</button>
+                <button class="layui-btn ">编辑</button>
+                <button class="layui-btn">删除</button>
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" name="name" placeholder="支持模糊查询.." autocomplete="off" class="layui-input"/>
+            </div>
+            <button lay-filter="search" class="layui-btn" lay-data="{submit:true}"><i class="fa fa-search" aria-hidden="true"></i>
+                查询
+            </button>
+            <table class="layui-hide" id="test1" lay-filter="demo" style="width: 100%;"></table>
+            <script type="text/html" id="switchTpl2">
+                <!-- 这里的 checked 的状态只是演示 -->
+                <input type="checkbox" name="sex" value="4" lay-skin="switch" lay-text="女|男" lay-filter="sexDemo"/>
+            </script>
+
+            <script type="text/html" id="checkboxTpl2">
+                <!-- 这里的 checked 的状态只是演示 -->
+                <input type="checkbox" name="lock" value="3" title="锁定" lay-filter="lockDemo"/>
+            </script>
+        </div>
+    </div>
+
+    <script>
+        //主动加载jquery模块
+        layui.use(['jquery', 'layer'], function () {
+            var $ = layui.$ //重点处
+                , layer = layui.layer;
+
+            document.getElementById("rightT").height = ($(window).height()) + "px";
+        });
+        layui.use('table', function () {
+            var table = layui.table,
+                form = layui.form;
+
+            //第一个实例
+            table.render({
+                elem: '#test',
+                height: 'full-82',
+                url: 'data/table.json' //数据接口
+                ,
+                page: true //开启分页
+                ,
+                cols: [
+                    [ //表头
+                        {
+                            field: 'id',
+                            title: '',
+                            width: "10%",
+                            fixed: 'left'
+                        }, {
+                        field: 'mark',
+                        title: '系统代号',
+                        width: "30%"
+                    }, {
+                        field: 'name',
+                        title: '名称',
+                        width: "30%",
+                    }, {
+                        field: 'state',
+                        title: '状态',
+                        width: "30%"
+                    }
+                    ]
+                ]
+            });
+            //第二个实例
+            table.render({
+                elem: '#test1',
+                height: 'full-450',
+                url: 'data/table.json', //数据接口
+                cols: [
+                    [ //表头
+                        {
+                            field: 'id',
+                            title: '',
+                            width: "10%",
+                            fixed: 'left'
+                        }, {
+                        field: 'mark',
+                        title: '系统代号',
+                        width: "29%"
+                    }, {
+                        field: 'name',
+                        title: '名称',
+                        width: "29%",
+                    }, {
+                        field: 'state',
+                        title: '状态',
+                        width: "29%"
+                    }
+                    ]
+                ],
+                page: true, //开启分页
+                limit: "10",
+                limits: "[10,30,60,90]"
+            });
+
+            //监听性别操作
+            form.on('switch(sexDemo)', function (obj) {
+                layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+            });
+
+            //监听锁定操作
+            form.on('checkbox(lockDemo)', function (obj) {
+                layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+            });
+        });
+    </script>
+    <!--<script>
+        var $=function(id){
+            return document.getElementById(id);
+        };
+        function bindEvents(obj,evt,fun){
+            if(window.addEventListener){
+                obj.addEventListener(evt,function(e){fun(e);},false);
+            }else{
+                obj.attachEvent('on'+evt,fun);
+            }
+        }
+
+        function SplitPanel(panel1,panel2,t,splitWide, panel1MinSize,panel2MinSize)
+        {
+            if(panel1 && panel2){
+                this.Panel1=panel1;
+                this.Panel2=panel2;
+                this.T=t?t:'H'; // 类型 H （水平方向） V 垂直方向
+                this.SplitWide=splitWide?splitWide:5; // 分隔条粗
+                this.Panel1MinSize=panel1MinSize?panel1MinSize:100; // 最小宽度 或者 高度
+                this.Panel2MinSize=panel2MinSize?panel2MinSize:100;// 最小宽度 或者 高度
+               this.MouseDown = 0;
+               this.P = 0;
+               this.init();
+               }
+          };
+
+               SplitPanel.prototype.init = function() {
+                       var sp = this;
+                       var size = sp.T =='H'?(sp.Panel1.offsetWidth+sp.Panel2.offsetWidth):(sp.Panel1.offsetHeight+sp.Panel2.offsetHeight);
+            var p=0;
+            var splitPanel = document.createElement('div');
+            splitPanel.style.cssText =  "background-color:#ddd;cursor:crosshair;overflow:hidden;" + (sp.T=='H'?'width:'+sp.SplitWide+'px;height:100%;float:left;':'width:100%;height:'+sp.SplitWide+'px;');
+            sp.Panel2.parentNode.insertBefore(splitPanel,sp.Panel2);
+            sp.T=='H'?(sp.Panel2.style.width =sp.Panel2.offsetWidth-sp.SplitWide +'px'):(sp.Panel2.style.height =(sp.Panel2.offsetHeight-sp.SplitWide) +'px');
+
+            splitPanel.onmouseover=function(){this.style.backgroundColor='#ddd';};
+            splitPanel.onmouseout=function(){this.style.backgroundColor='#ddd';};
+               splitPanel.onmousedown=function(e){sp.MouseDown=1; e=e||event; sp.P=sp.T=='H'?(e.x||e.pageX):(e.y||e.pageY); };
+            bindEvents(document.body,'mousemove',function(e)
+            {
+                 if(sp.MouseDown)
+                  {
+                       e=e||event;
+                       if(sp.T=='H')
+                       {
+                          p = e.x||e.pageX;
+                          var w2= sp.Panel2.offsetWidth  + (sp.P-p);
+                          var w1= size-w2-sp.SplitWide;
+                          if(w2<=sp.Panel2MinSize)
+                          {
+                            sp.Panel2.style.width = sp.Panel2MinSize +"px";
+                            sp.Panel1.style.width =  size-sp.Panel2MinSize -sp.SplitWide +"px";
+                            return;
+                          }
+                          if(w1<=sp.Panel1MinSize)
+                          {
+                            sp.Panel2.style.width = size -sp.Panel1MinSize-sp.SplitWide +"px";
+                            sp.Panel1.style.width =sp.Panel1MinSize   +"px";
+                            return;
+                          }
+                           sp.Panel2.style.width =w2 +"px";
+                           sp.Panel1.style.width =w1 +"px";
+
+                       }else
+                       {
+                          p=e.y||e.pageY;
+                          var h2= sp.Panel2.offsetHeight  + (sp.P-p);
+                          var h1= size-h2-sp.SplitWide;
+                          if(h2<=sp.Panel2MinSize)
+                          {
+                            sp.Panel2.style.height = sp.Panel2MinSize +"px";
+                            sp.Panel1.style.height =  size-sp.Panel2MinSize -sp.SplitWide +"px";
+                            return;
+                          }
+                          if(h1<=sp.Panel1MinSize)
+                          {
+                            sp.Panel2.style.height = size -sp.Panel1MinSize-sp.SplitWide +"px";
+                            sp.Panel1.style.height =sp.Panel1MinSize   +"px";
+                            return;
+                          }
+                           sp.Panel2.style.height =h2 +"px";
+                           sp.Panel1.style.height =h1 +"px";
+                       }
+                       sp.P=p;
+                   }
+                });
+               bindEvents(document.body,'mouseup',function(e){sp.MouseDown=0;});
+        };
+        var sp = new SplitPanel($('leftT'),$('rightT'),'H',5,100,300);
+    </script>-->
+</div>
+
+</body>
+
+</html>

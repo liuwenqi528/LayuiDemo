@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SystemController {
     @RequestMapping("/toSystemResource")
     public String listAll() {
-        return "user3";
+        return "sysres";
     }
 
 }
